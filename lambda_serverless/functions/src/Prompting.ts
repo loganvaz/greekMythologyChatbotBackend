@@ -212,18 +212,40 @@ troySacrificePrompt, onIslandExplorePrompt, onIslandFoundPrompt, onHomeResponse
 */
 
 export const handler = async (event:any) => {
+
+  const headers = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Headers': 'Content-Type, Access-Control-Allow-Origin',
+    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS'
+};
+    console.log("request context", event['requestContext']);
+    console.log("request context [http ]", event['requestContext']["http"]);
+    console.log("request context [http ] [method]", event['requestContext']["http"]["method"]);
+    if (event['requestContext']['http']['method'] === 'OPTIONS') {
+      // preflight request. reply successfully:
+      console.log("OPTIONS");
+      return {
+          statusCode: 200,
+          headers: headers,
+          body: JSON.stringify({message: 'You can access this resource'})
+      };
+    }
     console.log("enviornment is", process.env);
     console.log("event is ", event);
-    console.log("type of event is ", typeof event);
-    console.log("event.luck is ", event["luck"]);
+    console.log("event.body is", event["body"]);
+    console.log("event.body type is ", typeof event["body"])
+    event["body"] = JSON.parse(event["body"]);
+    console.log("event.body.type is", event["body"]["type"])
 
     //now do the processing
-    const messagesSoFar = event.messagesSoFar as MessagesInfo[];
-    const luck = event.luck as number;
+    const messagesSoFar = event["body"]['messagesSoFar'] as MessagesInfo[];
+    const luck = event['body']['luck'] as number;
 
-    if (event.type === "troySacrificePrompt") {
+    const eventType = event["body"]["type"];
+    if (eventType === "troySacrificePrompt") {
         return {
             statusCode: 200,
+            headers: headers,
             body: JSON.stringify(
               {
                 output: await troySacrificePrompt(messagesSoFar[messagesSoFar.length-1].message),
@@ -235,9 +257,10 @@ export const handler = async (event:any) => {
           };
 
     }
-    else if (event.type === "onIslandFoundPrompt") {
+    else if (eventType) {
         return {
             statusCode: 200,
+            headers: headers,
             body: JSON.stringify(
               {
                 output: await onIslandFoundPrompt(messagesSoFar.map(v => v.message), luck),
@@ -252,15 +275,15 @@ export const handler = async (event:any) => {
         {
             //extract shared stuff here
             //relevantMessages, this.gptStorage, luck
-            const othersOpinions = event.othersOpinions as Opinions;
-            const currentScores = event.myScores as ScoresOfInterest;
-            const nodeInterface = event.node as MyNodeInterface;
+            const othersOpinions = event['body']['othersOpinions'] as Opinions;
+            const currentScores = event['body']['myScores'] as ScoresOfInterest;
+            const nodeInterface = event['body']['node'] as MyNodeInterface;
             const node = new MyNode(nodeInterface.entranceDescription, nodeInterface.components, nodeInterface.primarySourceText, nodeInterface.specialInstructions, nodeInterface.citation);
-            const recentChatHistory = event.recentChatHistory as MessagesInfo[];
-            const infoToPass = event.infoToPass as string;
+            const recentChatHistory = event['body']['recentChatHistory'] as MessagesInfo[];
+            const infoToPass = event['body']['infoToPass'] as string;
             
 
-            if (event.type === "onIslandExplorePrompt") {
+            if (eventType === "onIslandExplorePrompt") {
                 return {
                     statusCode: 200,
                     body: JSON.stringify(
@@ -273,11 +296,12 @@ export const handler = async (event:any) => {
                     ),
                   };
 
-        }   else if (event.type === "onHomeResponse") {
+        }   else if (eventType === "onHomeResponse") {
 
-            const numSuitors = event.numSuitors as number;
+            const numSuitors = event['body']['numSuitors'] as number;
             return {
                 statusCode: 200,
+                headers: headers,
                 body: JSON.stringify(
                   {
                     output: await onHomeResponse(othersOpinions, currentScores, node, recentChatHistory, infoToPass, luck, numSuitors),
@@ -292,6 +316,7 @@ export const handler = async (event:any) => {
     }
     return {
         statusCode: 500,
+        headers: headers,
         body: JSON.stringify(
           {
             message: "Error - event not what we wanted (event.type not in set requested)",
