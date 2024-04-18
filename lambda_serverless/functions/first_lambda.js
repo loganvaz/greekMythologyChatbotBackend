@@ -23,6 +23,7 @@ module.exports.handler = async (event) => {
 //run with serverless invoke local --stage dev --aws-profile vscode_user -f firstLambda
 //serverless invoke local --stage dev --aws-profile vscode_user -f firstLambda -d '{"x": 3}'
 
+// serverless invoke local --stage dev --aws-profile vscode_user -f firstLambda -d '{\"type\": \"troySacrificePrompt\", \"messagesSoFar\": [{\"sender\":\"user\", \"message\":\"hello world\"}], \"luck\":20}'
 //go to lambda, us-west-2 to see deployment
 
 /*

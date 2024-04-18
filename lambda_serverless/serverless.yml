@@ -73,7 +73,7 @@ provider:
 
 functions:
   firstLambda:
-    handler: functions/lib/Prompting.dummy
+    handler: functions/lib/Prompting.handler
     url: true 
     description: This is the first lambda function - TODO replace w/ API calls based on state passed in
     timeout: 10

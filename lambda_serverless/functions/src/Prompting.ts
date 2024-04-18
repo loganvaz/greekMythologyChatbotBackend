@@ -16,7 +16,7 @@
 
 import OpenAI from 'openai';
 import { sampleInput, sampleOutput } from './SampleGeneration';
-import { Opinions,ScoresOfInterest, MessagesInfo,MyNode, GptExploringOutput, GptHomeOutput } from "./interfaces";
+import { Opinions,ScoresOfInterest, MessagesInfo,MyNode, GptExploringOutput, GptHomeOutput, MyNodeInterface } from "./interfaces";
 import {generateInput, generateHomeInput} from "./InputPromptGeneration";
 import {sampleInputHome, sampleOutputHome} from "./SampleGenerationHome";
 console.log("fetching process, enviornment is ", process.env);
@@ -204,6 +204,104 @@ export const onHomeResponse = async(othersOpinions:Opinions, currentScores: Scor
     else {
         return null;
     }
+}
+
+
+/*
+troySacrificePrompt, onIslandExplorePrompt, onIslandFoundPrompt, onHomeResponse
+*/
+
+export const handler = async (event:any) => {
+    console.log("enviornment is", process.env);
+    console.log("event is ", event);
+    console.log("type of event is ", typeof event);
+    console.log("event.luck is ", event["luck"]);
+
+    //now do the processing
+    const messagesSoFar = event.messagesSoFar as MessagesInfo[];
+    const luck = event.luck as number;
+
+    if (event.type === "troySacrificePrompt") {
+        return {
+            statusCode: 200,
+            body: JSON.stringify(
+              {
+                output: await troySacrificePrompt(messagesSoFar[messagesSoFar.length-1].message),
+                input: event,
+              },
+              null,
+              2
+            ),
+          };
+
+    }
+    else if (event.type === "onIslandFoundPrompt") {
+        return {
+            statusCode: 200,
+            body: JSON.stringify(
+              {
+                output: await onIslandFoundPrompt(messagesSoFar.map(v => v.message), luck),
+                input: event,
+              },
+              null,
+              2
+            ),
+          };
+
+    } else 
+        {
+            //extract shared stuff here
+            //relevantMessages, this.gptStorage, luck
+            const othersOpinions = event.othersOpinions as Opinions;
+            const currentScores = event.myScores as ScoresOfInterest;
+            const nodeInterface = event.node as MyNodeInterface;
+            const node = new MyNode(nodeInterface.entranceDescription, nodeInterface.components, nodeInterface.primarySourceText, nodeInterface.specialInstructions, nodeInterface.citation);
+            const recentChatHistory = event.recentChatHistory as MessagesInfo[];
+            const infoToPass = event.infoToPass as string;
+            
+
+            if (event.type === "onIslandExplorePrompt") {
+                return {
+                    statusCode: 200,
+                    body: JSON.stringify(
+                      {
+                        output: await onIslandExplorePrompt(othersOpinions, currentScores, node, recentChatHistory, infoToPass, luck),
+                        input: event,
+                      },
+                      null,
+                      2
+                    ),
+                  };
+
+        }   else if (event.type === "onHomeResponse") {
+
+            const numSuitors = event.numSuitors as number;
+            return {
+                statusCode: 200,
+                body: JSON.stringify(
+                  {
+                    output: await onHomeResponse(othersOpinions, currentScores, node, recentChatHistory, infoToPass, luck, numSuitors),
+                    input: event,
+                  },
+                  null,
+                  2
+                ),
+              };
+
+        }
+    }
+    return {
+        statusCode: 500,
+        body: JSON.stringify(
+          {
+            message: "Error - event not what we wanted (event.type not in set requested)",
+            input: event,
+          },
+          null,
+          2
+        ),
+      };
+
 }
 
 export const dummy = async() => {
