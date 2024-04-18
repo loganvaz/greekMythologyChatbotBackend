@@ -3,7 +3,8 @@
 import {ScoresOfInterest, MyNode, MessagesInfo, Opinions, NodePart, GptExploringOutput} from "./interfaces";
 import { generateHomeInput } from "./InputPromptGeneration";
 
-import home from "../../../../chatbot/src/NodeData/home.json";
+// import home from "../../../../chatbot/src/NodeData/home.json";
+import home from "../../data/NodeData/home.json";
 
 /* [
     Others Opinions, 

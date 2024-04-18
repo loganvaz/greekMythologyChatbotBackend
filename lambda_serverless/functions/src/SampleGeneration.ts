@@ -3,7 +3,8 @@
 import {ScoresOfInterest, MyNode, MessagesInfo, Opinions, NodePart, GptExploringOutput} from "./interfaces";
 import { generateInput } from "./InputPromptGeneration";
 
-import scylla from "../../../../chatbot/src/NodeData/charybdis_scylla.json";
+// import scylla from "../../../../chatbot/src/NodeData/charybdis_scylla.json";
+import scylla from "../../data/NodeData/charybdis_scylla.json";
 
 /* [
     Others Opinions, 

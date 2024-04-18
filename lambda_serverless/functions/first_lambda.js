@@ -20,11 +20,14 @@ module.exports.handler = async (event) => {
   // return { message: 'Go Serverless v1.0! Your function executed successfully!', event };
 };
 
-//run with serverless invoke local --stage dev --aws-profile vscode_user -f firstLambda
-//serverless invoke local --stage dev --aws-profile vscode_user -f firstLambda -d '{"x": 3}'
+//run with serverless invoke local --stage dev --aws-profile vscode_user -f greekMythologyChatbotEndpoint
+//serverless invoke local --stage dev --aws-profile vscode_user -f greekMythologyChatbotEndpoint -d '{"x": 3}'
 
-// serverless invoke local --stage dev --aws-profile vscode_user -f firstLambda -d '{\"type\": \"troySacrificePrompt\", \"messagesSoFar\": [{\"sender\":\"user\", \"message\":\"hello world\"}], \"luck\":20}'
+// serverless invoke local --stage dev --aws-profile vscode_user -f greekMythologyChatbotEndpoint -d '{\"type\": \"troySacrificePrompt\", \"messagesSoFar\": [{\"sender\":\"user\", \"message\":\"hello world\"}], \"luck\":20}'
 //go to lambda, us-west-2 to see deployment
+
+//serverless invoke --stage dev --aws-profile vscode_user -f greekMythologyChatbotEndpoint -d '{\"type\": \"troySacrificePrompt\", \"messagesSoFar\": [{\"sender\":\"user\", \"message\":\"hello world\"}], \"luck\":20}'
+
 
 /*
 deploying to aws
