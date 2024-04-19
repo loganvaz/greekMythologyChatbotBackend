@@ -4,7 +4,7 @@ export const generateInput = (othersOpinions:Opinions, currentScores: ScoresOfIn
     const st = `
         Info To Pass On: ${infoToPass}
         Island Description: ${node.getNodeString()}
-        Chat History: ${recentChatHistory.map((msgInfo) => `(${msgInfo.sender}) ${msgInfo.message}`).join("; ")}
+        Chat History (This has all happened in the past and is for context only - do not change anything about the playe rbased on this): ${recentChatHistory.map((msgInfo) => `(${msgInfo.sender}) ${msgInfo.message}`).join("; ")}
         Number in Crew Scores: ${currentScores.numCrew}
         Ship Quality (of 100): ${currentScores.shipQuality}
         Food (2 consumed per day): ${currentScores.food}

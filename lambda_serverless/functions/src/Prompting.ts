@@ -51,7 +51,7 @@ const basePromptExploring = `You are esentially the dungeon master for this play
             "thoughts":string your thought process on what happened. Make sure you consider wheere they are in the island.
             "whatHappens":string The description to tell the player about what happene
             "isAlive": boolean that is true if the player is still alive
-            "crewStrength":the amount the crew strength changed (positive if they gained crew, negative if they lost crew)
+            "crewStrength":the new number of people in the crew. Should be how many were before this round minus how many died this round
             "goldGain":number the amount of gold the player gained
             "shipQualityChange":number the change in ship quality (damage is negative, assistance is positive)
             "timeChange": number, the amount of time that has changed,
@@ -110,7 +110,7 @@ export const onIslandFoundPrompt = async (inputs:string[], luck:number):Promise<
         messages: [{role:"system", content:basePrompt}, {role:"user", content:prevMessages + thisMessage}]
     });
     const txt = completion.choices[0].message.content;
-    console.log("island found return");
+    console.log("island found return is",txt);
     if (!txt) return "unknown";
     // if (txt.includes("stay")) return "stay";
     if (txt.includes("explore")) return "explore";
@@ -156,6 +156,8 @@ Use luck to determine how successful an action is. Treat it like a DnD d20 roll.
 Any changes in food, ship quality, gold, fame, etc. should be explicitly stated (why it happened). Fame should only be given out once. Defeating a monster should increase fame as should meetin a god. Food represents the food on the ship.
 Generally, ship repairs should cost 10 gold and take 2 days for a ship repair of 1. If you have help, this increases the amount of ship repair and decreases the time. If they say we reapir the ship, assume they spend a week doing it. They can also forage for food and stuff during this time.
 
+Remember, only change the number of crew if they change based on your response (whatHappens)
+
     Remeber, the player's goal is to kill all the suitors. This must be done. The suitors are not good fighters. Consider the number of people in the players crew.
 Yor task is to return the following:
     {
@@ -163,7 +165,7 @@ Yor task is to return the following:
         "thoughts":string your thought process on what happened. Consider where they are on this island
         "whatHappens":string The description to tell the player about what happene
         "isAlive": boolean that is true if the player is still alive
-        "crewStrength":the amount the crew strength changed (positive if they gained crew, negative if they lost crew)
+        "crewStrength":the new strength of the crew (how many are left): should be old - new
         "goldGain":number the amount of gold the player gained
         "shipQualityChange":number the change in ship quality (damage is negative, assistance is positive)
         "timeChange": number, the amount of time that has changed,
@@ -257,7 +259,7 @@ export const handler = async (event:any) => {
           };
 
     }
-    else if (eventType) {
+    else if (eventType === "onIslandFoundPrompt") {
         return {
             statusCode: 200,
             headers: headers,
@@ -275,17 +277,20 @@ export const handler = async (event:any) => {
         {
             //extract shared stuff here
             //relevantMessages, this.gptStorage, luck
+            console.log("EVENT BODY IS", event["body"])
             const othersOpinions = event['body']['othersOpinions'] as Opinions;
-            const currentScores = event['body']['myScores'] as ScoresOfInterest;
+            const currentScores = event['body']['currentScores'] as ScoresOfInterest;
             const nodeInterface = event['body']['node'] as MyNodeInterface;
             const node = new MyNode(nodeInterface.entranceDescription, nodeInterface.components, nodeInterface.primarySourceText, nodeInterface.specialInstructions, nodeInterface.citation);
-            const recentChatHistory = event['body']['recentChatHistory'] as MessagesInfo[];
+            const recentChatHistory = event['body']['messagesSoFar'] as MessagesInfo[];
             const infoToPass = event['body']['infoToPass'] as string;
             
+            console.log("params are \nothersOpinions", othersOpinions, "\ncurretnSCores",currentScores,"\nnode", node, "\nrecent chat history", recentChatHistory,"\ninfoToPass ", infoToPass, "\nluck",luck)
 
             if (eventType === "onIslandExplorePrompt") {
                 return {
                     statusCode: 200,
+                    headers: headers,
                     body: JSON.stringify(
                       {
                         output: await onIslandExplorePrompt(othersOpinions, currentScores, node, recentChatHistory, infoToPass, luck),
