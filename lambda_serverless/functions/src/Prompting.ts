@@ -165,7 +165,7 @@ Yor task is to return the following:
         "thoughts":string your thought process on what happened. Consider where they are on this island
         "whatHappens":string The description to tell the player about what happene
         "isAlive": boolean that is true if the player is still alive
-        "crewStrength":the new strength of the crew (how many are left): should be old - new
+        "crewStrength":the new strength of the crew (how many are left): should be how many were before minus how many died
         "goldGain":number the amount of gold the player gained
         "shipQualityChange":number the change in ship quality (damage is negative, assistance is positive)
         "timeChange": number, the amount of time that has changed,
@@ -178,7 +178,7 @@ Yor task is to return the following:
             "whys": string[] why they have that thought
         },
         "foodChange": number, the amount of food that has changed (positive if they gained food, negative if they lost food)
-        "wonGame": boolean, the character wins the game when they have killed all the suitors,
+        "wonGame": boolean, the character wins the game when they have killed all the suitors or otherwise have reclaimed the throne of Ithaca
         "numSuitorsKilled": number, the number of suitors killed this round
     }
 
