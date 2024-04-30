@@ -7,7 +7,7 @@ export const generateInput = (othersOpinions:Opinions, currentScores: ScoresOfIn
         Chat History (This has all happened in the past and is for context only - do not change anything about the playe rbased on this): ${recentChatHistory.map((msgInfo) => `(${msgInfo.sender}) ${msgInfo.message}`).join("; ")}
         Number in Crew Scores: ${currentScores.numCrew}
         Ship Quality (of 100): ${currentScores.shipQuality}
-        Food (2 consumed per day): ${currentScores.food}
+        Food (2 consumed per day) User Currently Has: ${currentScores.food}
         Time (days): ${currentScores.time}
         Fame: ${currentScores.fame}
         Luck (use as a d20 roll to determine how likely this is to succeed, only actions within reason may succeed): ${luck}

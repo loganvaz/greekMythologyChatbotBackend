@@ -19,8 +19,8 @@
                     "how": "She offers no food, only destruction."
                 },
                 "fame": {
-                    "amount": 0,
-                    "how": "You gain no fame by encountering Scylla."
+                    "amount": 2,
+                    "how": "You gain fame by only losing 2 crew members to Scylla."
                 },
                 "gold": {
                     "amount": 0,
@@ -47,8 +47,8 @@
                     "how": "No food is provided by Charybdis."
                 },
                 "fame": {
-                    "amount": 0,
-                    "how": "Encountering Charybdis offers no fame."
+                    "amount": 3,
+                    "how": "If you somehow can survive Charybdis, you gain lots of fame."
                 },
                 "gold": {
                     "amount": 0,

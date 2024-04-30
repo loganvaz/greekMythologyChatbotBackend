@@ -69,7 +69,7 @@ export const sampleOutputHomeLuck12 = (numCrewBefore:number, peopleOfInterest:Op
         },
         "foodChange": 0,
         "wonGame": false,
-        "numSuitorsKilled": 4
+        "numSuitorsLeft": 26
     }
 `
     // console.log("json thinking of returning is ", st);

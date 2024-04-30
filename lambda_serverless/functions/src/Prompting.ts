@@ -46,6 +46,7 @@ const basePromptExploring = `You are esentially the dungeon master for this play
         Use luck to determine how successful an action is. Treat it like a DnD d20 roll. Remember, almost every monster should be slayable even if it costs crew members.
         Any changes in food, ship quality, gold, fame, etc. should be explicitly stated (why it happened). Fame should only be given out once. Defeating a monster should increase fame as should meetin a god. Food represents the food on the ship.
         Generally, ship repairs should cost 10 gold and take 2 days for a ship repair of 1. If you have help, this increases the amount of ship repair and decreases the time. If they say we reapir the ship, assume they spend a week doing it. They can also forage for food and stuff during this time.
+        Make sure to progress the narrative based on what the user says. Have them try to do what they say.
         Yor task is to return the following:
         {
             "thoughts":string your thought process on what happened. Make sure you consider wheere they are in the island.
@@ -64,7 +65,7 @@ const basePromptExploring = `You are esentially the dungeon master for this play
                 "whys": string[] why they have that thought
             },
             "foodChange": number, the amount of food that has changed (positive if they gained food, negative if they lost food)
-            "leftThisPlace": whether or not they left this place
+            "leftThisPlace": whether or not they left this place. Note just because they say they are leaving does not mean they have left - it must be possible for them to escape given the narrative so far.
         }
 
         Example:
@@ -74,7 +75,7 @@ const basePromptExploring = `You are esentially the dungeon master for this play
             Output:
                 ${sampleOutput}
                
-        Remeber, your entire response should be a json string that can be parsed with JSON.parse in js. Make sure you return a dictionary like above that is json parseable. Remember, you will receive a message responding to input, that is the ONLY one that should affect any changes. Any gold found earlier in the messages, crew that died, etc. should only be considered if its a consequence of the message responding to user input.`
+        Remeber, your entire response should be a json string that can be parsed with JSON.parse in js. Make sure you return a dictionary like above that is json parseable. Remember, you will receive a message responding to input, that is the ONLY one that should affect any changes. Any gold found earlier in the messages, crew that died, etc. should only be considered if its a consequence of the message responding to user input. Finally, remember that people of interest can only affect the user if they are in the current node or are a god. For instance, if I pissed off a cyclopse but left the island afterwards (he's not in the messages so far) then I am safe.`
 
 
 export const troySacrificePrompt = async (userInput:string):Promise<number> => {
@@ -99,7 +100,7 @@ export const troySacrificePrompt = async (userInput:string):Promise<number> => {
 //import examples and add them 
 export const onIslandFoundPrompt = async (inputs:string[], luck:number):Promise<string> => {
     console.log("in island found prompt");
-    const basePrompt = "You are a simple parser. The person has three options - 1) stay where they are [stay], 2) explore the island [explore], 3) continue traveling [travel]. Your job is to tell me which one they choose. Say only explore, travel, stay, or can't tell [unknown]. You must return either unknown, stay, explore, or travel. If they sail away from teh isalnd, they are leaving [travel]. Mentions of foraging/anything wiht interactiona are explore, anythign sailing away from the island is travel. If the encounter is water based (sirens, Scylla) they cannot travel until they have passed the initial challenge."
+    const basePrompt = "You are a simple parser. The person has three options - 1) stay where they are [stay], 2) explore the island [explore], 3) continue traveling [travel]. Your job is to tell me which one they choose. Say only explore, travel, stay, or can't tell [unknown]. You must return either unknown, stay, explore, or travel. If they sail away from teh isalnd, they are leaving [travel]. Mentions of foraging/anything wiht interactiona are explore, anythign sailing away from the island is travel. If the encounter is water based (sirens, Scylla) they cannot travel until they have passed the initial challenge. If they mention sailing towards home, it means they chose the 'travel' option."
     const prevMessageList:string[] = inputs.filter((v, idx) => idx !== inputs.length-1);
     console.log("got input list");
     const prevMessages:string = "prev messages:" +  (prevMessageList.length ? prevMessageList.join("\n") : "none");
@@ -179,7 +180,7 @@ Yor task is to return the following:
         },
         "foodChange": number, the amount of food that has changed (positive if they gained food, negative if they lost food)
         "wonGame": boolean, the character wins the game when they have killed all the suitors or otherwise have reclaimed the throne of Ithaca
-        "numSuitorsKilled": number, the number of suitors killed this round
+        "numSuitorsLeft": number, the number of suitors still alive. Should be number passed in minus the number killed.
     }
 
     Example:
