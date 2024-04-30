@@ -50,9 +50,10 @@ const basePromptExploring = `You are esentially the dungeon master for this play
         Yor task is to return the following:
         {
             "thoughts":string your thought process on what happened. Make sure you consider wheere they are in the island.
-            "whatHappens":string The description to tell the player about what happene
+            "whatHappens":string The description to tell the player about what happened
             "isAlive": boolean that is true if the player is still alive
-            "crewStrength":the new number of people in the crew. Should be how many were before this round minus how many died this round
+            "crewStrengthChange": the amount the crew strength changed by. This should be based on deaths that occured in the whatHappens string or crew gains that happened there. For instance, if 3 people died and 1 random person joined the crew this would be -2. Should be a string that is an explanation for the number followed by the number (3 of them were killed my the suitors this round so -3)
+            "crewStrength":the new number of people in the crew. Should be the original number plus the crewStrengthChange
             "goldGain":number the amount of gold the player gained
             "shipQualityChange":number the change in ship quality (damage is negative, assistance is positive)
             "timeChange": number, the amount of time that has changed,
