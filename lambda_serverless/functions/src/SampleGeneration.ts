@@ -52,9 +52,10 @@ import scylla from "../../data/NodeData/charybdis_scylla.json";
 export const sampleOutputScyllaLuck15 = (numCrewBefore:number, peopleOfInterest:Opinions):GptExploringOutput => {
     const st = `
     {
-        "thoughts": "Rolled well (and Apollo is helping so we can increase the roll by 2) so can prevent the monster from killing six as normal. However, the ship is going to take damage from both her and the water. Preventing Scylla from taking a crew member hasn't been done before so that deserves some fame. The player is still alive. 5 people die this round as Scylla acts so they lose 5 crew members. They haven't fully escaped yet though they are almost out of Scylla's reach.",
+        "thoughts": "Rolled well (and Apollo is helping so we can increase the roll by 2) so can prevent the monster from killing six as normal. However, the ship is going to take damage from both her and the water. Preventing Scylla from taking a crew member hasn't been done before so that deserves some fame. The player is still alive. 5 people die this round as Scylla acts so they lose 5 crew members - the other person who died was in a past message so he does not count. They haven't fully escaped yet though they are almost out of Scylla's reach.",
         "whatHappens": "Suddenly, a terrible six headed monster bursts from the top of the cliff, which you recognize as Scylla. You aim your bow at her and let lose a shot (guided by the favor of Apollo), forcing her to drop one of your men. However, you can do no further harm and as your crew member falls, he hits the ship, breaking it slightly.",
         "isAlive": true,
+        "crewStrengthChange": "-5 - Scylla kills 5 crew members this round",
         "crewStrength": ${numCrewBefore-5},
         "goldGain": 0,
         "shipQualityChange": -10,
